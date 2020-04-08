@@ -3,10 +3,6 @@ const app = new Vue({
   data: {
     color: "green",
     direction: ["left", "right", "top", "bottom"],
-    shuffleCount: 0,
-    holeX: 0,
-    holeY: 0,
-    dir: "left",
     blockData: [
       [
         { id: 0, color: "blue", number: 1 },
@@ -41,44 +37,40 @@ const app = new Vue({
       if (x>0) {
         if (!this.blockData[y][x-1].number) {
           // console.log(`left is empty`);
-          this.move("left");
+          this.move(x,y,"left");
         }
       }
       if (x<3) {
         if (!this.blockData[y][x+1].number) {
           // console.log(`right is empty`);
-          this.move("right");
+          this.move(x,y,"right");
         }
       }
       if (y>0) {
         if (!this.blockData[y-1][x].number) {
           // console.log(`top is empty`);
-          this.move("top");
+          this.move(x,y,"top");
         }
       }
       if (y<3) {
         if (!this.blockData[y+1][x].number) {
           // console.log(`bottom is empty`);
-          this.move("bottom");
+          this.move(x,y,"bottom");
         }
       }
       this.checkCorrect();
     },
-    move: function(direction) {
-      let pointX = this.holeY, pointY = this.holeY;
-      if (direction == "left") {
-        pointX--;
-      } else if (direction == "right") {
-        pointX++;
-      } else if (direction == "top") {
-        pointY--;
-      } else if (direction == "bottom") {
-        pointY++;
-      }
-      this.blockData[this.holeY][this.holeX].color = this.blockData[pointY][pointX].color;
-      this.blockData[this.holeY][this.holeX].number = this.blockData[pointY][pointX].number;
-      this.blockData[pointY][pointX].color = "";
-      this.blockData[pointY][pointX].number = null;
+    move: function(x,y,direction) {
+      let pointX = x, pointY = y;
+
+      if (direction === "left") pointX--;
+      if (direction === "right") pointX++;
+      if (direction === "top") pointY--;
+      if (direction === "bottom")pointY++;
+      this.blockData[pointY][pointX].color = this.blockData[y][x].color;
+      this.blockData[pointY][pointX].number = this.blockData[y][x].number;
+      this.blockData[y][x].color = "";
+      this.blockData[y][x].number = null;
     },
     checkCorrect: function() {
       for(let i=0; i<15; i++) {
@@ -88,65 +80,38 @@ const app = new Vue({
           return;
         }
       }
-      setTimeout(()=> { alert("おめでとう。"); }, 200);
       console.log("Yes");
       return;
-    },
-    keyAction(e) {
-      console.log(e.code);
-      if (e.code == "ArrowLeft") {
-        this.dir = this.direction[0];
-      } else if (e.code == "ArrowRight") {
-        this.dir = this.direction[1];
-      } else if (e.code == "ArrowUp") {
-        this.dir = this.direction[2];
-      } else if (e.code == "ArrowDown") {
-        this.dir = this.direction[3];
-      } else return;
-      this.dirMove();
-      this.checkCorrect();
-    },
-    setHole() {
-      for(let i=0; i<16; i++) {
-        if (!this.blockData[Math.floor(i/4)][i%4].number) {
-          this.holeX = i%4;
-          this.holeY = Math.floor(i/4);
-        }
-      }
-    },
-    dirMove() {
-      if (this.dir == "left" && this.holeX!=0) {
-        this.move(this.dir);
-        this.holeX--;
-      } else if (this.dir == "right" && this.holeX!=3) {
-        this.move(this.dir);
-        this.holeX++;
-      } else if (this.dir == "top" && this.holeY!=0) {
-        this.move(this.dir);
-        this.holeY--;
-      } else if (this.dir == "bottom" && this.holeY!=3) {
-        this.move(this.dir);
-        this.holeY++;
-      }
     }
   },
   mounted: function () {
     console.log('mounted');
-    this.setHole();
-    console.log(this.holeX, this.holeY);
-    for(let i=0; i<this.shuffleCount; i++) {
-      this.dir = this.direction[Math.floor(Math.random()*4)];
-      this.dirMove();
-      console.log(this.holeX, this.holeY);
-      
+    let holeX, holeY;
+    for(let i=0; i<16; i++) {
+      if (!this.blockData[Math.floor(i/4)][i%4].number) {
+        holeX = i%4;
+        holeY = Math.floor(i/4);
+      }
     }
-  },
-  created() {
-    //キーコードによる動作の登録
-    document.addEventListener("keydown", this.keyAction);
-  },
-  beforeDestroy() {
-    //キーコードによる動作の削除
-    document.removeEventListener("keyup", this.keyAction);
+    // console.log(holeX, holeY);
+    for(let i=0; i<1000; i++) {
+      let dir = this.direction[Math.floor(Math.random()*4)];
+      if (dir == "left" && holeX<3) {
+        this.move(holeX+1, holeY, "left");
+        holeX++;
+      }
+      if (dir == "right" && holeX>0) {
+        this.move(holeX-1, holeY, "right");
+        holeX--;
+      }
+      if (dir == "top" && holeY<3) {
+        this.move(holeX, holeY+1, "top");
+        holeY++;
+      }
+      if (dir == "bottom" && holeY>0) {
+        this.move(holeX, holeY-1, "bottom");
+        holeY--;
+      }
+    }
   }
 })
