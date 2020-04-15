@@ -3,7 +3,12 @@ const app = new Vue({
   data: {
     color: "green",
     direction: ["left", "right", "top", "bottom"],
-    moveCount: 10000,
+
+    moveCount: 50,
+    timerCount: 0,
+    timerObject: null,
+    seconds: '00',
+    minutes: '00',
     blockData: [
       [
         { id: 0, color: "blue", number: 1 },
@@ -82,8 +87,33 @@ const app = new Vue({
         }
       }
       console.log("Yes");
+      this.stop();
+      localStorage.setItem('count', this.timerCount.toString());
       location.href = './result.html';
       return;
+    },
+    convert: function() {
+      this.seconds = (this.timerCount%60).toString(10);
+      if (this.seconds.length == 1) {
+        this.seconds = '0' + this.seconds;
+      }
+      this.minutes = (Math.floor(this.timerCount/60)).toString(10);
+      if (this.minutes.length == 1) {
+        this.minutes = '0' + this.minutes;
+      }
+    },
+    count: function() {
+      this.timerCount++;
+      // console.log(this.timerCount);
+      this.convert();
+    },
+    start: function() {
+      console.log('OK');
+      this.timerCount = 0;
+      this.timerObject = setInterval(this.count, 1000);
+    },
+    stop: function() {
+      clearInterval(this.timerObject);
     }
   },
   mounted: function () {
@@ -115,5 +145,6 @@ const app = new Vue({
         holeY--;
       }
     }
+    this.start();
   }
 })
