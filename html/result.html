@@ -13,7 +13,9 @@
 </head>
 <body class="white">
   <p class="title tx_black" id="fifpuzzle">ゲームクリア</p>
-  <div class="text tx_black" id="desc">おめでとうございます</div>
+  <div id="app">
+    <div class="text tx_black" id="desc">クリア時間は{{minutes}}{{seconds}}秒です。</div>
+  </div>
   <a href="./[Work]play.html">
     <div class="black button" id="startbutton">
       <div class="bt_text tx_white text">もう一度プレイ</div>
@@ -79,5 +81,7 @@
       </div>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="../js/result.js"></script>
 </body>
 </html>
