@@ -26,6 +26,9 @@ const app1 = new Vue({
       console.log('OK');
       this.timerCount = 0;
       this.timerObject = setInterval(this.count, 1000);
+    },
+    stop: function() {
+      clearInterval(this.timerObject);
     }
   },
   mounted: function(){
