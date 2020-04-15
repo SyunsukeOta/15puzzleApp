@@ -3,6 +3,7 @@ const app = new Vue({
   data: {
     color: "green",
     direction: ["left", "right", "top", "bottom"],
+
     moveCount: 50,
     timerCount: 0,
     timerObject: null,
