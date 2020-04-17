@@ -14,103 +14,17 @@
   <div id="base">
     <div id="app">
       <div class="timer tx_black">{{ minutes }}:{{ seconds }}</div>
-      <div class="gray frout_black frame" id="sample">
-        <div class="container">
-          <div class="block" v-bind:class="blockData[0][0].color" v-on:click="clickEvent(0,0)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[0][0].number }}
-            </div>
-          </div>
-          <div class="block" v-bind:class="blockData[0][1].color" v-on:click="clickEvent(1,0)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[0][1].number }}
-            </div>
-          </div>
-          <div class="block" v-bind:class="blockData[0][2].color" v-on:click="clickEvent(2,0)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[0][2].number }}
-            </div>
-          </div>
-          <div class="block" v-bind:class="blockData[0][3].color" v-on:click="clickEvent(3,0)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[0][3].number }}
+        <div class="gray frout_black frame" id="sample">
+          <div v-for="(bData, index) in blockData">
+            <div class="container">
+              <div class="block" v-for="data in bData" v-bind:class="data.color" v-on:click="clickEvent(data.id,index)">
+                <div class="text tx_white bl_text bold">
+                  {{ data.number }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-    
-        <div class="container">
-          <div class="block" v-bind:class="blockData[1][0].color" v-on:click="clickEvent(0,1)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[1][0].number }}
-            </div>
-          </div>
-          <div class="block" v-bind:class="blockData[1][1].color" v-on:click="clickEvent(1,1)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[1][1].number }}
-            </div>
-          </div>
-          <div class="block" v-bind:class="blockData[1][2].color" v-on:click="clickEvent(2,1)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[1][2].number }}
-            </div>
-          </div>
-          <div class="block" v-bind:class="blockData[1][3].color" v-on:click="clickEvent(3,1)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[1][3].number }}
-            </div>
-          </div>
-        </div>
-    
-        <div class="container">
-          <div class="block" v-bind:class="blockData[2][0].color" v-on:click="clickEvent(0,2)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[2][0].number }}
-            </div>
-          </div>
-          <div class="block" v-bind:class="blockData[2][1].color" v-on:click="clickEvent(1,2)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[2][1].number }}
-            </div>
-          </div>
-          <div class="block" v-bind:class="blockData[2][2].color" v-on:click="clickEvent(2,2)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[2][2].number }}
-            </div>
-          </div>
-          <div class="block" v-bind:class="blockData[2][3].color" v-on:click="clickEvent(3,2)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[2][3].number }}
-            </div>
-          </div>
-        </div>
-    
-        <div class="container">
-          <div class="block" v-bind:class="blockData[3][0].color" v-on:click="clickEvent(0,3)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[3][0].number }}
-            </div>
-          </div>
-  
-          <div class="block" v-bind:class="blockData[3][1].color" v-on:click="clickEvent(1,3)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[3][1].number }}
-            </div>
-          </div>
-  
-          <div class="block" v-bind:class="blockData[3][2].color" v-on:click="clickEvent(2,3)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[3][2].number }}
-            </div>
-          </div>
-  
-          <div class="block " v-bind:class="blockData[3][3].color" v-on:click="clickEvent(3,3)">
-            <div class="text tx_white bl_text bold">
-              {{ blockData[3][3].number }}
-            </div>
-          </div>
-  
-        </div>
-      </div>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Array</title>
+</head>
+<body>
+  <div id="app">
+    <div v-for="data in sample[0]" style="background-color: blue;" v-on:click="add(data.id)">
+      My id is {{data.id}}. And my name is {{data.name}}.
+    </div>
+    <div v-for="data in sample[1]" style="background-color: red;" v-on:click="add(data.id)">
+      My id is {{data.id}}. And my name is {{data.name}}.
+    </div>
+    <div v-for="data in sample[2]" style="background-color: yellow;" v-on:click="add(data.id)">
+      My id is {{data.id}}. And my name is {{data.name}}.
+    </div>
+
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="Array.js"></script>
+</body>
+</html>

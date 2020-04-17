@@ -4,11 +4,15 @@ const app = new Vue({
     color: "green",
     direction: ["left", "right", "top", "bottom"],
 
-    moveCount: 50,
+    moveCount: 1000,
     timerCount: 0,
     timerObject: null,
     seconds: '00',
     minutes: '00',
+    holeX: 0,
+    holeY: 0,
+    dir: '',
+    checkPoint: 0,
     blockData: [
       [
         { id: 0, color: "blue", number: 1 },
@@ -17,58 +21,64 @@ const app = new Vue({
         { id: 3, color: "blue", number: 4 },
       ],
       [
-        { id: 4, color: "orange", number: 5 },
-        { id: 5, color: "orange", number: 6 },
-        { id: 6, color: "orange", number: 7 },
-        { id: 7, color: "orange", number: 8 },
+        { id: 0, color: "orange", number: 5 },
+        { id: 1, color: "orange", number: 6 },
+        { id: 2, color: "orange", number: 7 },
+        { id: 3, color: "orange", number: 8 },
       ],
       [
-        { id: 8, color: "yellow", number: 9 },
-        { id: 9, color: "yellow", number: 10 },
-        { id: 10, color: "", number: null },
-        { id: 11, color: "yellow", number: 12 },
+        { id: 0, color: "yellow", number: 9 },
+        { id: 1, color: "yellow", number: 10 },
+        { id: 2, color: "", number: null },
+        { id: 3, color: "yellow", number: 12 },
       ],
       [
-        { id: 12, color: "green", number: 13 },
-        { id: 13, color: "green", number: 14 },
-        { id: 14, color: "yellow", number: 11 },
-        { id: 15, color: "green", number: 15 },
+        { id: 0, color: "green", number: 13 },
+        { id: 1, color: "green", number: 14 },
+        { id: 2, color: "yellow", number: 11 },
+        { id: 3, color: "green", number: 15 },
       ]
     ]
   },
   methods: {
-    clickEvent: function(x, y) {
-      // console.log(`You clicked ${(x)+4*(y)+1}(${x},${y})`);
-      //blockdata[y][x]      
-      if (x>0) {
-        if (!this.blockData[y][x-1].number) {
-          // console.log(`left is empty`);
-          this.move(x,y,"left");
-        }
-      }
-      if (x<3) {
-        if (!this.blockData[y][x+1].number) {
-          // console.log(`right is empty`);
-          this.move(x,y,"right");
-        }
-      }
-      if (y>0) {
-        if (!this.blockData[y-1][x].number) {
-          // console.log(`top is empty`);
-          this.move(x,y,"top");
-        }
-      }
-      if (y<3) {
-        if (!this.blockData[y+1][x].number) {
-          // console.log(`bottom is empty`);
-          this.move(x,y,"bottom");
-        }
-      }
+    clickEvent: function(x,y) {
+      this.checkMove(x,y);
       this.checkCorrect();
+    },
+    checkMove: function(x,y) {
+      if (x>0 && !this.blockData[y][x-1].number) {
+        this.move(x,y,"left");
+      }
+      if (x<3 && !this.blockData[y][x+1].number) {
+        this.move(x,y,"right");
+      }
+      if (y>0 && !this.blockData[y-1][x].number) {
+        this.move(x,y,"top");
+      }
+      if (y<3 && !this.blockData[y+1][x].number) {
+        this.move(x,y,"bottom");
+      }
+    },
+    checkHole: function(x, y, direction) {
+      if (direction == "left" && x<3) {
+        this.move(x+1, y, "left");
+        this.holeX++;
+      }
+      if (direction == "right" && x>0) {
+        this.move(x-1, y, "right");
+        this.holeX--;
+      }
+      if (direction == "top" && y<3) {
+        this.move(x, y+1, "top");
+        this.holeY++;
+      }
+      if (direction == "bottom" && y>0) {
+        this.move(x, y-1, "bottom");
+        this.holeY--;
+      }
     },
     move: function(x,y,direction) {
       let pointX = x, pointY = y;
-
       if (direction === "left") pointX--;
       if (direction === "right") pointX++;
       if (direction === "top") pointY--;
@@ -80,17 +90,16 @@ const app = new Vue({
     },
     checkCorrect: function() {
       for(let i=0; i<15; i++) {
-        let p = this.blockData[Math.floor(i/4)][i%4].number;
-        if (p-(i+1)) {
-          // console.log("No");
-          return;
-        }
+        this.checkPoint = this.blockData[Math.floor(i/4)][i%4].number;
+        if (this.checkPoint-(i+1)) return;
       }
       console.log("Yes");
+      this.correct();
+    },
+    correct: function() {
       this.stop();
       localStorage.setItem('count', this.timerCount.toString());
       location.href = './result.html';
-      return;
     },
     convert: function() {
       this.seconds = (this.timerCount%60).toString(10);
@@ -104,7 +113,6 @@ const app = new Vue({
     },
     count: function() {
       this.timerCount++;
-      // console.log(this.timerCount);
       this.convert();
     },
     start: function() {
@@ -118,32 +126,15 @@ const app = new Vue({
   },
   mounted: function () {
     console.log('mounted');
-    let holeX, holeY;
     for(let i=0; i<16; i++) {
       if (!this.blockData[Math.floor(i/4)][i%4].number) {
-        holeX = i%4;
-        holeY = Math.floor(i/4);
+        this.holeX = i%4;
+        this.holeY = Math.floor(i/4);
       }
     }
-    // console.log(holeX, holeY);
     for(let i=0; i<this.moveCount; i++) {
-      let dir = this.direction[Math.floor(Math.random()*4)];
-      if (dir == "left" && holeX<3) {
-        this.move(holeX+1, holeY, "left");
-        holeX++;
-      }
-      if (dir == "right" && holeX>0) {
-        this.move(holeX-1, holeY, "right");
-        holeX--;
-      }
-      if (dir == "top" && holeY<3) {
-        this.move(holeX, holeY+1, "top");
-        holeY++;
-      }
-      if (dir == "bottom" && holeY>0) {
-        this.move(holeX, holeY-1, "bottom");
-        holeY--;
-      }
+      this.dir = this.direction[Math.floor(Math.random()*4)];
+      this.checkHole(this.holeX, this.holeY, this.dir);
     }
     this.start();
   }
